@@ -1,4 +1,4 @@
-package org.yourstock.yourstock;
+package org.yourstock.client;
 
 import org.junit.Test;
 

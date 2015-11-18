@@ -1,7 +1,9 @@
-package org.yourstock.yourstock;
+package org.yourstock.client.android;
 
 import android.app.Activity;
 import android.os.Bundle;
+
+import org.yourstock.client.android.R;
 
 public class MainActivity extends Activity {
 

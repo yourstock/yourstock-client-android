@@ -1,4 +1,4 @@
-package org.yourstock.yourstock;
+package org.yourstock.client.android;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
