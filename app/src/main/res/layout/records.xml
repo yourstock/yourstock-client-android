@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="40dp">
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="150dp"
+        android:layout_height="match_parent"
+        android:textSize="5pt"
+        />
+
+
+    <TextView
+        android:id="@+id/price"
+        android:layout_width="90dp"
+        android:layout_height="match_parent"
+        android:textSize="5pt" />
+
+    <TextView
+        android:id="@+id/min_price"
+        android:layout_width="90dp"
+        android:layout_height="match_parent"
+        android:textSize="5pt" />
+
+    <TextView
+        android:id="@+id/max_price"
+        android:layout_width="90dp"
+        android:layout_height="match_parent"
+        android:textSize="5pt" />
+</LinearLayout>

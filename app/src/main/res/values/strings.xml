@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Your Stock</string>
+    <string name="h_name">Name</string>
+    <string name="h_price">Price</string>
+    <string name="h_min_price">Min Price</string>
+    <string name="h_max_price">Max Price</string>
 </resources>
