@@ -81,6 +81,32 @@ public class Record {
         dummyList.add(new Record("035420","네이버",631000, 458000, 797000, false));
         dummyList.add(new Record("005930","삼성전자",1284000, 1033000, 1510000, false));
         dummyList.add(new Record("023590","다우기술", 22950, 10500, 35800, true));
+        dummyList.add(new Record("023590","다우기술", 22950, 10500, 35800, true));
+        dummyList.add(new Record("023590","다우기술", 22950, 10500, 35800, true));
+        dummyList.add(new Record("023590","다우기술", 22950, 10500, 35800, true));
+        dummyList.add(new Record("023590","다우기술", 22950, 10500, 35800, true));
+        dummyList.add(new Record("023590","다우기술", 22950, 10500, 35800, true));
+        dummyList.add(new Record("023590","다우기술", 22950, 10500, 35800, true));
+        dummyList.add(new Record("023590","다우기술", 22950, 10500, 35800, true));
+        dummyList.add(new Record("023590","다우기술", 22950, 10500, 35800, true));
+        dummyList.add(new Record("023590","다우기술", 22950, 10500, 35800, true));
+        dummyList.add(new Record("023590","다우기술", 22950, 10500, 35800, true));
+        dummyList.add(new Record("023590","다우기술", 22950, 10500, 35800, true));
+        dummyList.add(new Record("023590","다우기술", 22950, 10500, 35800, true));
+        dummyList.add(new Record("023590","다우기술", 22950, 10500, 35800, true));
+        dummyList.add(new Record("023590","다우기술", 22950, 10500, 35800, true));
+        dummyList.add(new Record("023590","다우기술", 22950, 10500, 35800, true));
+        dummyList.add(new Record("023590","다우기술", 22950, 10500, 35800, true));
+
+        dummyList.add(new Record("023590","다우기술", 22950, 10500, 35800, true));
+        dummyList.add(new Record("023590","다우기술", 22950, 10500, 35800, true));
+        dummyList.add(new Record("023590","다우기술", 22950, 10500, 35800, true));
+        dummyList.add(new Record("023590","다우기술", 22950, 10500, 35800, true));
+        dummyList.add(new Record("023590","다우기술", 22950, 10500, 35800, true));
+        dummyList.add(new Record("023590","다우기술", 22950, 10500, 35800, true));
+        dummyList.add(new Record("023590","다우기술", 22950, 10500, 35800, true));
+
+
         return dummyList;
     }
 }
