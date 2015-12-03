@@ -12,13 +12,17 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Spinner;
+import android.widget.Toast;
 
 import org.yourstock.client.android.org.yourstock.client.android.Adapter.MenuAdapter;
 import org.yourstock.client.android.org.yourstock.client.android.Adapter.RecordAdapter;
@@ -27,6 +31,7 @@ import org.yourstock.client.android.org.yourstock.client.android.Adapter.RecordN
 import org.yourstock.client.android.org.yourstock.client.android.Bean.Record;
 import org.yourstock.client.android.org.yourstock.client.android.Bean.RecordComparator;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -36,7 +41,8 @@ public class MainActivity extends Activity implements MenuAdapter.OnItemClickLis
 
     private ListView mRecordListView;
     private ListView mRecordNameListView;
-    private List<Record> mRecordList;
+    private List<Record> mViewList;
+    private List<Record> mDataList;
 
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -100,14 +106,16 @@ public class MainActivity extends Activity implements MenuAdapter.OnItemClickLis
 
         setContentView(R.layout.activity_main);
 
-       initDrawerLayout(savedInstanceState);
-        mRecordList = Record.getDummyList();
+        initDrawerLayout(savedInstanceState);
+        mDataList = new ArrayList<Record>();
+        mViewList = Record.getDummyList();
+        mDataList.addAll(mViewList);
 
         mRecordNameAdapter =
-                new RecordNameAdapter(this.getApplicationContext(), mRecordList);
+                new RecordNameAdapter(this.getApplicationContext(), mViewList);
 
         mRecordContentsAdapter =
-                new RecordContentsAdapter(this.getApplicationContext(), mRecordList);
+                new RecordContentsAdapter(this.getApplicationContext(), mViewList);
 
         mRecordListView = (ListView) this.findViewById(R.id.record_list);
         mRecordNameListView = (ListView) this.findViewById(R.id.record_name_list);
@@ -166,7 +174,7 @@ public class MainActivity extends Activity implements MenuAdapter.OnItemClickLis
     private View.OnClickListener onSortBtn = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            sortBySomething(v.getId(), mRecordList);
+            sortBySomething(v.getId(), mViewList);
         }
     };
 
@@ -198,11 +206,21 @@ public class MainActivity extends Activity implements MenuAdapter.OnItemClickLis
 
         // Inflate and set the layout for the dialog
         // Pass null as the parent view because its going in the dialog layout
-        builder.setView(inflater.inflate(R.layout.dialog_search, null))
+        View view = inflater.inflate(R.layout.dialog_search, null);
+        final Spinner spinner = (Spinner) view.findViewById(R.id.duration);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.duration,
+                android.R.layout.simple_dropdown_item_1line);
+        spinner.setAdapter(adapter);
+
+        builder.setView(view)
                 // Add action buttons
                 .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
+                        int position = spinner.getSelectedItemPosition();
+                        CharSequence sequence = (CharSequence) spinner.getSelectedItem();
+
+                        Toast.makeText(getApplicationContext(), "pos: " + position + "contents: "+ sequence, Toast.LENGTH_SHORT).show();
                         dialog.dismiss();
                     }
                 })
@@ -211,6 +229,8 @@ public class MainActivity extends Activity implements MenuAdapter.OnItemClickLis
                         dialog.dismiss();
                     }
                 });
-        return builder.create();
+        Dialog dialog = builder.create();
+        dialog.getWindow().setGravity(Gravity.TOP);
+        return dialog;
     }
 }

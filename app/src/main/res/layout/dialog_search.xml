@@ -10,27 +10,33 @@
         android:scaleType="center"
         android:background="#FFFFBB33"
         android:contentDescription="@string/app_name" />
-    <EditText
-        android:id="@+id/username"
-        android:inputType="textEmailAddress"
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="4dp"
-        android:layout_marginBottom="4dp"
-        android:hint="username" />
-    <EditText
-        android:id="@+id/password"
-        android:inputType="textPassword"
+        android:text="@string/duration"
+        android:gravity="center"/>
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="4dp"
-        android:layout_marginBottom="16dp"
-        android:fontFamily="sans-serif"
-        android:hint="password"/>
+        android:layout_height="wrap_content">
+        <ToggleButton
+            android:id="@+id/toggle_min"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textOn="@string/toggle_max"
+            android:textOff="@string/toggle_min"
+            android:background="@drawable/min_max_toggle"
+            android:textColor="#fafafa"
+            android:textStyle="bold"
+            android:textSize="8pt"
+            />
+
+        <Spinner
+            android:id="@+id/duration"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
     <EditText
         android:id="@+id/password2"
         android:inputType="textPassword"
