@@ -12,6 +12,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,6 +21,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 
+import org.json.JSONObject;
 import org.yourstock.client.android.org.yourstock.client.android.Adapter.MenuAdapter;
 import org.yourstock.client.android.org.yourstock.client.android.Adapter.RecordAdapter;
 import org.yourstock.client.android.org.yourstock.client.android.Adapter.RecordContentsAdapter;
@@ -27,8 +29,13 @@ import org.yourstock.client.android.org.yourstock.client.android.Adapter.RecordN
 import org.yourstock.client.android.org.yourstock.client.android.Bean.Record;
 import org.yourstock.client.android.org.yourstock.client.android.Bean.RecordComparator;
 
+import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.List;
+
+import io.socket.client.IO;
+import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
 
 public class MainActivity extends Activity implements MenuAdapter.OnItemClickListener{
 
@@ -144,6 +151,37 @@ public class MainActivity extends Activity implements MenuAdapter.OnItemClickLis
 
         mRecordListView.setOnTouchListener(touchListener);
         mRecordNameListView.setOnTouchListener(touchListener);
+
+        try {
+            final Socket socket  = IO.socket("http://45.32.18.89:3000");
+            socket.on(Socket.EVENT_CONNECT, new Emitter.Listener(){
+
+                @Override
+                public void call(Object... args) {
+
+                    socket.emit("chat message", "Hello World");
+                    Log.e("Connect", "emit Hello World");
+                }
+            }).on("chat message", new Emitter.Listener(){
+
+                @Override
+                public void call(Object... args) {
+                    JSONObject obj = (JSONObject) args[0];
+                    socket.disconnect();
+                    Log.e("chat message", "received:" + obj.toString() + " disconnect request");
+                }
+            }).on(Socket.EVENT_DISCONNECT, new Emitter.Listener() {
+
+                @Override
+                public void call(Object... args) {
+                    Log.e("Disconnect", "disconnect received");
+                }
+            });
+           //l socket.connect();
+        } catch (URISyntaxException e) {
+            Log.e("Connect", "error: " + e.getMessage());
+
+        }
     }
 
     private void sortBySomething(int fieldId, List<Record> list) {
