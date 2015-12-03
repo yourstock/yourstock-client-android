@@ -6,6 +6,8 @@
     <string name="h_max_price">Max Price</string>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
+    <string name="dialog_ok">OK</string>
+    <string name="dialog_cancel">Cancel</string>
 
     <string-array name="menu_array">
         <item>Search</item>

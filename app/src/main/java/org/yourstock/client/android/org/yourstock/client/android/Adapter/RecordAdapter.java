@@ -1,12 +1,15 @@
-package org.yourstock.client.android;
+package org.yourstock.client.android.org.yourstock.client.android.Adapter;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import org.yourstock.client.android.R;
 import org.yourstock.client.android.org.yourstock.client.android.Bean.Record;
 
 import java.text.NumberFormat;
@@ -17,22 +20,30 @@ import java.util.Locale;
 /**
  * Created by Taeksang on 2015-11-30.
  */
-public class YourStockAdapterContents extends BaseAdapter {
+public abstract class RecordAdapter extends BaseAdapter {
 
     private List<Record> mList;
     private LayoutInflater mLayoutInflater;
     private Context mContext;
 
-    public YourStockAdapterContents(Context context) {
+    protected static class RecordHolder {
+        public TextView name;
+        public TextView price;
+        public TextView minPrice;
+        public TextView maxPrice;
+    }
+
+    public RecordAdapter(Context context) {
         this.mList = new ArrayList<Record>();
         this.mContext = context;
         mLayoutInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
-    public YourStockAdapterContents(Context context, List<Record> list) {
+    public RecordAdapter(Context context, List<Record> list) {
         this(context);
         this.mList = list;
     }
+
     @Override
     public int getCount() {
         if (this.mList == null)
@@ -56,21 +67,26 @@ public class YourStockAdapterContents extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        int pos;
-        Context context;
-        View myView;
+        RecordHolder holder;
 
         if (convertView == null) {
-            context = parent.getContext();
-            myView = mLayoutInflater.inflate(R.layout.record_contents, null);
-        } else
-            myView = convertView;
-
+            convertView = inflateRecordView(mLayoutInflater, parent);
+            holder = createHolder(convertView);
+            convertView.setTag(holder);
+        } else {
+            holder = (RecordHolder) convertView.getTag();
+        }
         if (this.mList != null)
-            attachRecordObject(this.mList.get(position), myView);
+            attachRecordObject(this.mList.get(position), holder);
 
-        return myView;
+        return convertView;
     }
+
+    protected abstract View inflateRecordView(LayoutInflater inflater, ViewGroup parent);
+
+    protected abstract RecordHolder createHolder(View view);
+
+    protected abstract void attachRecordObject(Record record, RecordHolder holder);
 
     private void attachRecordObject(Record record, View view) {
         NumberFormat formatKorea;
@@ -81,7 +97,7 @@ public class YourStockAdapterContents extends BaseAdapter {
 
         formatKorea = NumberFormat.getNumberInstance(Locale.KOREA);
         txtViewPrice.setText(formatKorea.format(record.getPrice()));
-        txtViewMinPrice.setText(formatKorea.format(record.getMin_price()));
-        txtViewMaxPrice.setText(formatKorea.format(record.getMax_price()));
+        txtViewMinPrice.setText(formatKorea.format(record.getMinPrice()));
+        txtViewMaxPrice.setText(formatKorea.format(record.getMaxPrice()));
     }
 }

@@ -1,6 +1,9 @@
 package org.yourstock.client.android;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -9,14 +12,18 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.ListView;
 
+import org.yourstock.client.android.org.yourstock.client.android.Adapter.MenuAdapter;
+import org.yourstock.client.android.org.yourstock.client.android.Adapter.RecordAdapter;
+import org.yourstock.client.android.org.yourstock.client.android.Adapter.RecordContentsAdapter;
+import org.yourstock.client.android.org.yourstock.client.android.Adapter.RecordNameAdapter;
 import org.yourstock.client.android.org.yourstock.client.android.Bean.Record;
 import org.yourstock.client.android.org.yourstock.client.android.Bean.RecordComparator;
 
@@ -25,8 +32,8 @@ import java.util.List;
 
 public class MainActivity extends Activity implements MenuAdapter.OnItemClickListener{
 
-    private YourStockAdapterContents mYourStockAdapter;
-    private YourStockNameAdapter mYourStockNameAdapter;
+    private RecordAdapter mRecordNameAdapter, mRecordContentsAdapter;
+
     private ListView mRecordListView;
     private ListView mRecordNameListView;
     private List<Record> mRecordList;
@@ -96,11 +103,11 @@ public class MainActivity extends Activity implements MenuAdapter.OnItemClickLis
        initDrawerLayout(savedInstanceState);
         mRecordList = Record.getDummyList();
 
-        mYourStockAdapter =
-                new YourStockAdapterContents(this.getApplicationContext(), mRecordList);
+        mRecordNameAdapter =
+                new RecordNameAdapter(this.getApplicationContext(), mRecordList);
 
-        mYourStockNameAdapter =
-                new YourStockNameAdapter(this.getApplicationContext(), mRecordList);
+        mRecordContentsAdapter =
+                new RecordContentsAdapter(this.getApplicationContext(), mRecordList);
 
         mRecordListView = (ListView) this.findViewById(R.id.record_list);
         mRecordNameListView = (ListView) this.findViewById(R.id.record_name_list);
@@ -115,8 +122,8 @@ public class MainActivity extends Activity implements MenuAdapter.OnItemClickLis
         hMinPrice.setOnClickListener(onSortBtn);
         hMaxPrice.setOnClickListener(onSortBtn);
 
-        mRecordNameListView.setAdapter(mYourStockNameAdapter);
-        mRecordListView.setAdapter(mYourStockAdapter);
+        mRecordNameListView.setAdapter(mRecordNameAdapter);
+        mRecordListView.setAdapter(mRecordContentsAdapter);
 
         View.OnTouchListener touchListener = new View.OnTouchListener() {
             boolean dispatched = false;
@@ -152,8 +159,8 @@ public class MainActivity extends Activity implements MenuAdapter.OnItemClickLis
     }
 
     private void invalidateListView() {
-        mYourStockAdapter.notifyDataSetChanged();
-        mYourStockNameAdapter.notifyDataSetChanged();
+        mRecordNameAdapter.notifyDataSetChanged();
+        mRecordContentsAdapter.notifyDataSetChanged();
     }
 
     private View.OnClickListener onSortBtn = new View.OnClickListener() {
@@ -165,7 +172,10 @@ public class MainActivity extends Activity implements MenuAdapter.OnItemClickLis
 
     @Override
     public void onClick(View view, int position) {
-
+        if (position == 0) {
+            Dialog dialog = createDialog();
+            dialog.show();
+        }
     }
 
     @Override
@@ -177,21 +187,30 @@ public class MainActivity extends Activity implements MenuAdapter.OnItemClickLis
             return true;
         }
        return  super.onOptionsItemSelected(item);
-        /*// Handle action buttons
-        switch (item.getItemId()) {
-            case R.id.action_websearch:
-                // create intent to perform web search for this planet
-                Intent intent = new Intent(Intent.ACTION_WEB_SEARCH);
-                intent.putExtra(SearchManager.QUERY, getActionBar().getTitle());
-                // catch event that there's no activity to handle intent
-                if (intent.resolveActivity(getPackageManager()) != null) {
-                    startActivity(intent);
-                } else {
-                    Toast.makeText(this, R.string.app_not_available, Toast.LENGTH_LONG).show();
-                }
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }*/
+    }
+
+
+    public Dialog createDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        // Get the layout inflater
+        LayoutInflater inflater = getLayoutInflater();
+
+
+        // Inflate and set the layout for the dialog
+        // Pass null as the parent view because its going in the dialog layout
+        builder.setView(inflater.inflate(R.layout.dialog_search, null))
+                // Add action buttons
+                .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                    }
+                })
+                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                    }
+                });
+        return builder.create();
     }
 }

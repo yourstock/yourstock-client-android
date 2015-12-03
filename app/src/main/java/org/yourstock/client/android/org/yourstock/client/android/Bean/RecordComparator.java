@@ -73,7 +73,7 @@ public class RecordComparator {
 
         @Override
         public int compareField(Record lhs, Record rhs) {
-            return lhs.getMin_price() - rhs.getMin_price();
+            return lhs.getMinPrice() - rhs.getMinPrice();
         }
     }
 
@@ -81,7 +81,7 @@ public class RecordComparator {
 
         @Override
         public int compareField(Record lhs, Record rhs) {
-            return lhs.getMax_price() - rhs.getMax_price();
+            return lhs.getMaxPrice() - rhs.getMaxPrice();
         }
     }
 }

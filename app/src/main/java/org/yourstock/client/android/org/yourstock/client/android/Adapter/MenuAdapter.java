@@ -1,10 +1,12 @@
-package org.yourstock.client.android;
+package org.yourstock.client.android.org.yourstock.client.android.Adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import org.yourstock.client.android.R;
 
 /**
  * Created by Taeksang on 2015-12-02.
