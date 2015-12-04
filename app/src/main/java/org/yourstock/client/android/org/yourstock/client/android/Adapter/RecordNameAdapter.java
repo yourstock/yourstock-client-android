@@ -26,16 +26,15 @@ public class RecordNameAdapter extends RecordAdapter{
     }
 
     @Override
-    protected View inflateRecordView(LayoutInflater inflater, ViewGroup parent) {
-        return inflater.inflate(R.layout.record_name, parent, false);
+    protected View inflateRecordView(LayoutInflater inflater, ViewGroup parent,
+                                     RecordHolder holder) {
+        View inflated;
+
+        inflated = inflater.inflate(R.layout.record_name, parent, false);
+        holder.name = (TextView)inflated.findViewById(R.id.name);
+        return inflated;
     }
 
-    @Override
-    protected RecordHolder createHolder(View view) {
-        RecordHolder holder = new RecordHolder();
-        holder.name = (TextView) view.findViewById(R.id.name);
-        return holder;
-    }
 
     @Override
     protected void attachRecordObject(Record record, RecordHolder holder) {

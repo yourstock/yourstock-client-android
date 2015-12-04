@@ -27,15 +27,17 @@ public class RecordComparator {
 
         mFieldMap.put(R.id.h_name, new NameComparator());
         mFieldMap.put(R.id.h_price, new PriceComparator());
-        mFieldMap.put(R.id.h_min_price, new MinPriceComparator());
-        mFieldMap.put(R.id.h_max_price, new MaxPriceComparator());
     }
 
-    public RecordFieldComparator getComparator(int fieldId) {
+    public RecordFieldComparator getComparator(int fieldId, int index) {
         RecordFieldComparator comparator;
 
-        comparator = mFieldMap.get(fieldId);
-
+        if (index == -1) {
+            comparator = mFieldMap.get(fieldId);
+        }
+        else {
+            comparator = new HistoryComparator(index);
+        }
         return comparator;
     }
 
@@ -69,19 +71,21 @@ public class RecordComparator {
         }
     }
 
-    private class MinPriceComparator extends RecordFieldComparator {
+    private class HistoryComparator extends RecordFieldComparator {
 
-        @Override
-        public int compareField(Record lhs, Record rhs) {
-            return lhs.getMinPrice() - rhs.getMinPrice();
+        private int index;
+        public HistoryComparator(int index) {
+            this.index = index;
         }
-    }
-
-    private class MaxPriceComparator extends RecordFieldComparator {
-
         @Override
-        public int compareField(Record lhs, Record rhs) {
-            return lhs.getMaxPrice() - rhs.getMaxPrice();
+        protected int compareField(Record lhs, Record rhs) {
+            double ratio1;
+            double ratio2;
+
+            ratio1 = lhs.getHistoryRatio()[index];
+            ratio2 = rhs.getHistoryRatio()[index];
+
+            return Double.compare(ratio1, ratio2);
         }
     }
 }

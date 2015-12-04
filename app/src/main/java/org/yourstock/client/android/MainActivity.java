@@ -15,6 +15,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 
+import android.util.TypedValue;
 import android.view.Gravity;
 
 import android.util.Log;
@@ -24,10 +25,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.NumberPicker;
 import android.widget.Spinner;
@@ -119,6 +122,48 @@ public class MainActivity extends Activity implements MenuAdapter.OnItemClickLis
         }
     }
 
+    private void makeHeader() {
+        LinearLayout.LayoutParams params;
+        LinearLayout headerLayout;
+        Button h_price;
+        String[] periods;
+        Button[] h_history;
+        int width;
+
+
+        h_price = (Button) findViewById(R.id.h_price);
+        periods =  getResources().getStringArray(R.array.duration);
+        //Log.e("width", "width: " + h_price.getWidth());
+        width = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, getResources().getDisplayMetrics());
+        params = new LinearLayout.LayoutParams(width, ViewGroup.LayoutParams.MATCH_PARENT);
+        headerLayout = (LinearLayout) findViewById(R.id.header);
+
+
+        h_history = new Button[Record.NUM_PERIOD * Record.KINDS];
+
+        for(int i = 0; i < Record.NUM_PERIOD; i++) {
+            h_history[i * 2] = new Button(this);
+            h_history[i * 2 + 1] = new Button(this);
+
+            h_history[i * 2].setLayoutParams(params);
+            h_history[i * 2].setTextSize(TypedValue.COMPLEX_UNIT_PT, 6);
+            h_history[i * 2].setTag(new Integer(i * 2));
+            h_history[i * 2].setText("Min:" + periods[i]);
+
+            h_history[i * 2 + 1].setLayoutParams(params);
+            h_history[i * 2 + 1].setTextSize(TypedValue.COMPLEX_UNIT_PT, 6);
+            h_history[i * 2 + 1].setTag(new Integer(i * 2 + 1));
+            h_history[i * 2 + 1].setText("Max:" + periods[i]);
+
+            h_history[i * 2].setOnClickListener(onSortBtn);
+            h_history[i * 2 + 1].setOnClickListener(onSortBtn);
+            headerLayout.addView(h_history[i * 2]);
+            headerLayout.addView(h_history[i * 2 + 1]);
+        }
+
+
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Button hName, hPrice, hMinPrice, hMaxPrice;
@@ -143,13 +188,10 @@ public class MainActivity extends Activity implements MenuAdapter.OnItemClickLis
 
         hName = (Button) this.findViewById(R.id.h_name);
         hPrice = (Button) this.findViewById(R.id.h_price);
-        hMinPrice = (Button) this.findViewById(R.id.h_min_price);
-        hMaxPrice = (Button) this.findViewById(R.id.h_max_price);
+        makeHeader();
 
         hName.setOnClickListener(onSortBtn);
         hPrice.setOnClickListener(onSortBtn);
-        hMinPrice.setOnClickListener(onSortBtn);
-        hMaxPrice.setOnClickListener(onSortBtn);
 
         mRecordNameListView.setAdapter(mRecordNameAdapter);
         mRecordListView.setAdapter(mRecordContentsAdapter);
@@ -204,14 +246,24 @@ public class MainActivity extends Activity implements MenuAdapter.OnItemClickLis
             Log.e("Connect", "error: " + e.getMessage());
 
         }
+
     }
 
-    private void sortBySomething(int fieldId, List<Record> list) {
+    private void sortBySomething(View v, List<Record> list) {
+        int fieldId;
+
+        fieldId = v.getId();
+
         RecordComparator recordComparator;
         RecordComparator.RecordFieldComparator comparator;
 
         recordComparator = RecordComparator.getInstance();
-        comparator = recordComparator.getComparator(fieldId);
+        if (v.getTag() != null) {
+            comparator = recordComparator.getComparator(fieldId, (Integer)v.getTag());
+        }
+        else {
+            comparator = recordComparator.getComparator(fieldId, -1);
+        }
         comparator.updateState();
         Collections.sort(list, comparator);
 
@@ -226,7 +278,7 @@ public class MainActivity extends Activity implements MenuAdapter.OnItemClickLis
     private View.OnClickListener onSortBtn = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            sortBySomething(v.getId(), mViewList);
+            sortBySomething(v, mViewList);
         }
     };
 
@@ -265,13 +317,13 @@ public class MainActivity extends Activity implements MenuAdapter.OnItemClickLis
                     return true;
                 }
                 catch(NoSuchFieldException e){
-                    Log.w("setNumberPickerTextColor", e.getMessage());
+                   // Log.w("setNumberPickerTextColor", e.getMessage());
                 }
                 catch(IllegalAccessException e){
-                    Log.w("setNumberPickerTextColor", e.getMessage());
+                   // Log.w("setNumberPickerTextColor", e.getMessage());
                 }
                 catch(IllegalArgumentException e){
-                    Log.w("setNumberPickerTextColor", e.getMessage());
+                 //   Log.w("setNumberPickerTextColor", e.getMessage());
                 }
             }
         }
@@ -363,7 +415,6 @@ public class MainActivity extends Activity implements MenuAdapter.OnItemClickLis
                 });
         Dialog dialog = builder.create();
         dialog.getWindow().setGravity(Gravity.TOP);
-
 
         return dialog;
     }
