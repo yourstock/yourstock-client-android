@@ -1,34 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="80dp">
-
+    android:layout_height="80dp"
+    android:tag="record">
 
     <TextView
         android:id="@+id/price"
         android:layout_width="100dp"
         android:layout_height="match_parent"
-        android:textSize="9pt"
         android:gravity="right|center_vertical"
+        android:text="100\n100"
+        android:textColor="#000000"
+        android:textSize="9pt" />>
 
-
-        android:textColor="#000000"/>
 
     <TextView
         android:id="@+id/min_price"
         android:layout_width="100dp"
         android:layout_height="match_parent"
-        android:textSize="9pt"
         android:gravity="right|center_vertical"
+        android:textColor="#000000"
+        android:textSize="9pt" />
 
-        android:textColor="#000000"/>
 
     <TextView
         android:id="@+id/max_price"
         android:layout_width="100dp"
         android:layout_height="match_parent"
-        android:textSize="9pt"
         android:gravity="right|center_vertical"
+        android:textColor="#000000"
 
-        android:textColor="#000000"/>
+        android:textSize="9pt" />
 </LinearLayout>
+
+    <!--
+
+        <LinearLayout
+            android:tag="1week"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <TextView
+                android:text="ratio"
+                android:tag=""
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="right|center_vertical"/>
+            <TextView
+                android:text="price"
+                android:tag=""
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="right|center_vertical"/>
+        </LinearLayout>
+    -->

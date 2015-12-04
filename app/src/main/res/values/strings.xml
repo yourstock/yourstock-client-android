@@ -9,8 +9,8 @@
     <string name="dialog_ok">OK</string>
     <string name="dialog_cancel">Cancel</string>
     <string name="duration">Duration</string>
-    <string name="toggle_min">Min</string>
-    <string name="toggle_max">Max</string>
+    <string name="toggle_min">Min: &#160;▼</string>
+    <string name="toggle_max">Max: &#160;▲</string>
 
     <string-array name="menu_array">
         <item>Search</item>
@@ -24,6 +24,7 @@
         <item>A year</item>
         <item>2 years</item>
         <item>3 years</item>
+        <item>4 years</item>
         <item>5 years</item>
 
     </string-array>
