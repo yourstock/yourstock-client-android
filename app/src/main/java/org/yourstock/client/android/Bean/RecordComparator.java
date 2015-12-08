@@ -1,4 +1,4 @@
-package org.yourstock.client.android.org.yourstock.client.android.Bean;
+package org.yourstock.client.android.Bean;
 
 import org.yourstock.client.android.R;
 
@@ -13,13 +13,14 @@ public class RecordComparator {
     private static RecordComparator instance = null;
 
     private HashMap<Integer, RecordFieldComparator> mFieldMap;
+    private HistoryComparator mHistoryComparator;
 
 
     public static RecordComparator getInstance() {
         if (RecordComparator.instance == null) {
-            RecordComparator.instance = new RecordComparator();
+           instance = new RecordComparator();
         }
-        return RecordComparator.instance;
+        return instance;
     }
 
     private RecordComparator() {
@@ -27,6 +28,7 @@ public class RecordComparator {
 
         mFieldMap.put(R.id.h_name, new NameComparator());
         mFieldMap.put(R.id.h_price, new PriceComparator());
+        mHistoryComparator = new HistoryComparator(0);
     }
 
     public RecordFieldComparator getComparator(int fieldId, int index) {
@@ -36,7 +38,8 @@ public class RecordComparator {
             comparator = mFieldMap.get(fieldId);
         }
         else {
-            comparator = new HistoryComparator(index);
+            mHistoryComparator.setIndex(index);
+            comparator = mHistoryComparator;
         }
         return comparator;
     }
@@ -86,6 +89,10 @@ public class RecordComparator {
             ratio2 = rhs.getHistoryRatio()[index];
 
             return Double.compare(ratio1, ratio2);
+        }
+
+        public void setIndex(int index) {
+            this.index = index;
         }
     }
 }

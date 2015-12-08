@@ -1,21 +1,16 @@
-package org.yourstock.client.android.org.yourstock.client.android.Adapter;
+package org.yourstock.client.android.Adapter;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import org.yourstock.client.android.R;
-import org.yourstock.client.android.org.yourstock.client.android.Bean.Record;
+import org.yourstock.client.android.Bean.Record;
 
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Created by Taeksang on 2015-11-30.

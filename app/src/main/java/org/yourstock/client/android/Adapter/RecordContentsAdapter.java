@@ -1,9 +1,7 @@
-package org.yourstock.client.android.org.yourstock.client.android.Adapter;
+package org.yourstock.client.android.Adapter;
 
-import android.app.ActionBar;
 import android.content.Context;
 import android.graphics.Color;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -13,9 +11,8 @@ import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 
+import org.yourstock.client.android.Bean.Record;
 import org.yourstock.client.android.R;
-import org.yourstock.client.android.org.yourstock.client.android.Bean.Record;
-
 import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
@@ -115,11 +112,11 @@ public class RecordContentsAdapter extends RecordAdapter {
 
 
         linear_params = getLinearLayoutParams(100);
-        linearLayout = new LinearLayout[Record.NUM_PERIOD * Record.KINDS];
+        linearLayout = new LinearLayout[total];
 
-        history = new TextView[2][Record.NUM_PERIOD * Record.KINDS];
-        history[0] = new TextView[Record.NUM_PERIOD * Record.KINDS];
-        history[1] = new TextView[Record.NUM_PERIOD * Record.KINDS];
+        history = new TextView[2][total];
+        history[0] = new TextView[total];
+        history[1] = new TextView[total];
 
         for (int i = 0; i < Record.NUM_PERIOD; i++) {
             min_cur = linearLayout[i * 2] = new LinearLayout(mContext);

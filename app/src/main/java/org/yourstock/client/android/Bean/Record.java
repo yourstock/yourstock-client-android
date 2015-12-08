@@ -1,4 +1,6 @@
-package org.yourstock.client.android.org.yourstock.client.android.Bean;
+package org.yourstock.client.android.Bean;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,7 +9,7 @@ import java.util.List;
  * Created by Taeksang on 2015-11-30.
  */
 public class Record {
-    public static final int NUM_PERIOD = 9;
+    public static final int NUM_PERIOD = 8;
     public static final int KINDS = 2;
     private String id;
     private String name;
@@ -57,7 +59,7 @@ public class Record {
         }
     }
 
-    public Record(String id, String name, int price, int maxPrice, int minPrice, boolean isKosdaq) {
+    public Record(String id, String name, int price, int minPrice, int maxPrice, boolean isKosdaq) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -141,6 +143,12 @@ public class Record {
         this.id = id;
     }
 
+    public static Record convertRecord(JSONObject obj) {
+        Record record = null;
+
+        return record;
+    }
+
     public static List<Record> getDummyList() {
         ArrayList<Record> dummyList = new ArrayList<Record>();
 
@@ -163,9 +171,7 @@ public class Record {
         dummyList.add(new Record("023590", "다우기술", 22950, 10500, 35800, true));
         dummyList.add(new Record("023590", "다우기술", 22950, 10500, 35800, true));
         dummyList.add(new Record("023590", "다우기술", 22950, 10500, 35800, true));
-        dummyList.add(new Record("023590", "다우기술", 22950, 10500, 35800, true));
 
-        dummyList.add(new Record("023590", "다우기술", 22950, 10500, 35800, true));
         dummyList.add(new Record("023590", "다우기술", 22950, 10500, 35800, true));
         dummyList.add(new Record("023590", "다우기술", 22950, 10500, 35800, true));
         dummyList.add(new Record("023590", "다우기술", 22950, 10500, 35800, true));

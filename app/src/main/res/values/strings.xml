@@ -13,9 +13,17 @@
     <string name="toggle_max">Max: &#160;▲</string>
 
     <string-array name="menu_array">
+        <item>Entire List</item>
         <item>Search</item>
+        <item>Kosdaq</item>
         <item>PushSetting</item>
     </string-array>
+    <string-array name="kinds">
+        <item>KOSDAQ</item>
+        <item>KOSPI</item>
+        <item>Entire</item>
+     </string-array>
+
     <string-array name="duration">
         <item>A week ago</item>
         <item>2 weeks ago</item>
@@ -24,9 +32,12 @@
         <item>A year</item>
         <item>2 years</item>
         <item>3 years</item>
-        <item>4 years</item>
         <item>5 years</item>
 
     </string-array>
+
+    <string name="registering_message_ready">InstanceID 토큰 가져오기</string>
+    <string name="registering_message_generating">InstanceID 토큰 생성중...</string>
+    <string name="registering_message_complete">완료!</string>
 
 </resources>

@@ -1,4 +1,4 @@
-package org.yourstock.client.android.org.yourstock.client.android.Adapter;
+package org.yourstock.client.android.Adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
