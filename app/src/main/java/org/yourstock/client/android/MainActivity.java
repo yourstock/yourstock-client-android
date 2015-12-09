@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -28,6 +29,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -100,6 +102,7 @@ public class MainActivity extends Activity implements MenuAdapter.OnItemClickLis
         mKinds = getResources().getStringArray(R.array.kinds);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (RecyclerView) findViewById(R.id.left_drawer);
+
         LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(this);
         mDrawerList.setLayoutManager(mLinearLayoutManager);
 
@@ -226,12 +229,24 @@ public class MainActivity extends Activity implements MenuAdapter.OnItemClickLis
             }
         };
 
+        mRecordListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String simpleId = mViewList.get(position).getId();
+                String url = "http://m.stock.naver.com/item/main.nhn#/stocks/";
+
+                url += simpleId;
+                url += "/total";
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                startActivity(intent);
+            }
+        });
         mRecordListView.setOnTouchListener(touchListener);
         mRecordNameListView.setOnTouchListener(touchListener);
 
         initSocketIO();
 
-        //getInstanceIdToken();
+        getInstanceIdToken();
     }
 
     @Override
@@ -244,34 +259,53 @@ public class MainActivity extends Activity implements MenuAdapter.OnItemClickLis
         super.onDestroy();
     }
 
-    private void updateHistory(Record record, JSONArray data) throws JSONException {
+    private boolean updateHistory(Record record, JSONArray data) throws JSONException {
         int[] history;
         JSONObject cursor;
         history = record.getHistoryPrice();
+        boolean ret;
+
+        ret = true;
 
         for (int i = 0; i < data.length(); i++) {
             // Log.e("updateHistory", "i: " + i);
             cursor = data.getJSONObject(i);
             history[i * 2] = cursor.getInt("min");
             history[i * 2 + 1] = cursor.getInt("max");
+
+            if (history[i * 2] == 0 || history[i * 2 + 1] == 0) {
+                ret = false;
+                break;
+            }
         }
+
         record.makeRatio();
+        return ret;
     }
 
     private void updateDataList(JSONObject obj) {
         JSONObject cursor;
-
+        boolean ret;
+        Record record;
         Log.e("Tmp length", "length: " + mTemp.size());
-        for (Record record : mTemp) {
+        Iterator<Record> iter;
+
+        iter = mTemp.iterator();
+
+        while(iter.hasNext()) {
             try {
+                record = iter.next();
                 cursor = obj.getJSONObject(record.getId());
-                updateHistory(record, cursor.getJSONArray("data"));
-               // Log.e("history", obj.toString());
+                ret = updateHistory(record, cursor.getJSONArray("data"));
+                if (ret == false) {
+                    iter.remove();
+                }
+                // Log.e("history", obj.toString());
 
             } catch (JSONException e) {
                 //Log.e("update Data View", e.getMessage());
+                iter.remove();
             }
-
         }
 
         mDataList.clear();
@@ -385,6 +419,7 @@ public class MainActivity extends Activity implements MenuAdapter.OnItemClickLis
         invalidateListView();
     }
 
+    private String token;
     public void getInstanceIdToken() {
         if (checkPlayServices()) {
             Log.e("getInstanceIdToken", "startService");
@@ -475,7 +510,7 @@ public class MainActivity extends Activity implements MenuAdapter.OnItemClickLis
             txtView.setText(mKinds[mode]);
             filterByMode(mDataList, mViewList, mode);
         } else {
-            getInstanceIdToken();
+           // getInstanceIdToken();
 
         }
     }
@@ -539,6 +574,9 @@ public class MainActivity extends Activity implements MenuAdapter.OnItemClickLis
     private NumberPicker picker_decimal;
     private NumberPicker picker_float;
     private ToggleButton mToggle_btn;
+    private Spinner mSpinner;
+    private TextView textPoint;
+    private TextView textPercentage;
 
     public Dialog createDialog() {
 
@@ -549,7 +587,7 @@ public class MainActivity extends Activity implements MenuAdapter.OnItemClickLis
         // Inflate and set the layout for the dialog
         // Pass null as the parent view because its going in the dialog layout
         View view = inflater.inflate(R.layout.dialog_search, null);
-        final Spinner spinner = (Spinner) view.findViewById(R.id.duration);
+        mSpinner = (Spinner) view.findViewById(R.id.duration);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.duration,
                 android.R.layout.simple_dropdown_item_1line);
 
@@ -557,8 +595,9 @@ public class MainActivity extends Activity implements MenuAdapter.OnItemClickLis
         mToggle_btn = (ToggleButton) view.findViewById(R.id.toggle_min_max);
 
 
-        picker_decimal.setMaxValue(100);
-        picker_decimal.setMinValue(0);
+        picker_decimal.setMaxValue(300);
+        picker_decimal.setMinValue(95);
+        picker_decimal.setValue(100);
         picker_decimal.setWrapSelectorWheel(true);
 
         picker_float = (NumberPicker) view.findViewById(R.id.picker_float);
@@ -570,8 +609,8 @@ public class MainActivity extends Activity implements MenuAdapter.OnItemClickLis
             }
         });
 
-        final TextView textPoint = (TextView) view.findViewById(R.id.txt_floating_point);
-        final TextView textPercentage = (TextView) view.findViewById(R.id.txt_percentage);
+        textPoint = (TextView) view.findViewById(R.id.txt_floating_point);
+        textPercentage = (TextView) view.findViewById(R.id.txt_percentage);
 
         picker_float.setMaxValue(99);
         picker_float.setMinValue(0);
@@ -586,12 +625,24 @@ public class MainActivity extends Activity implements MenuAdapter.OnItemClickLis
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 int color;
+                int min, max, defaultValue;
                 if (isChecked) {
                     color = Color.RED;
+                    min = 0;
+                    defaultValue = 90;
+                    max = 200;
 
                 } else {
+                    min = 95;
+                    defaultValue = 100;
+                    max = 300;
                     color = Color.BLUE;
                 }
+
+                picker_decimal.setMaxValue(max);
+                picker_decimal.setMinValue(min);
+                picker_decimal.setValue(defaultValue);
+
                 textPoint.setTextColor(color);
                 textPercentage.setTextColor(color);
                 setNumberPickerTextColor(picker_decimal, color);
@@ -599,8 +650,7 @@ public class MainActivity extends Activity implements MenuAdapter.OnItemClickLis
             }
         });
 
-        spinner.setAdapter(adapter);
-        picker_decimal.setValue(10);
+        mSpinner.setAdapter(adapter);
 
 
         builder.setView(view)
@@ -608,15 +658,115 @@ public class MainActivity extends Activity implements MenuAdapter.OnItemClickLis
                 .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        int position = spinner.getSelectedItemPosition();
-                        CharSequence sequence = (CharSequence) spinner.getSelectedItem();
+                        int position = mSpinner.getSelectedItemPosition();
+                        CharSequence sequence = (CharSequence) mSpinner.getSelectedItem();
                         double percentage;
 
                         percentage = getDoubleFromPicker(picker_decimal, picker_float);
-                        Toast.makeText(getApplicationContext(), "pos: " + position + "contents: "
-                                        + sequence + "isChecked: " + mToggle_btn.isChecked() +
-                                        " " + percentage,
-                                Toast.LENGTH_SHORT).show();
+
+                        filterList(mViewList, position, mToggle_btn.isChecked(), percentage);
+
+                        dialog.dismiss();
+                    }
+                })
+                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                    }
+                });
+        Dialog dialog = builder.create();
+        dialog.getWindow().setGravity(Gravity.TOP);
+
+        return dialog;
+    }
+
+
+    public Dialog createDialog2() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        // Get the layout inflater
+        LayoutInflater inflater = getLayoutInflater();
+
+        // Inflate and set the layout for the dialog
+        // Pass null as the parent view because its going in the dialog layout
+        View view = inflater.inflate(R.layout.dialog_search, null);
+        mSpinner = (Spinner) view.findViewById(R.id.duration);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.duration,
+                android.R.layout.simple_dropdown_item_1line);
+
+        picker_decimal = (NumberPicker) view.findViewById(R.id.picker_decimal);
+        mToggle_btn = (ToggleButton) view.findViewById(R.id.toggle_min_max);
+
+
+        picker_decimal.setMaxValue(300);
+        picker_decimal.setMinValue(95);
+        picker_decimal.setValue(100);
+        picker_decimal.setWrapSelectorWheel(true);
+
+        picker_float = (NumberPicker) view.findViewById(R.id.picker_float);
+
+        picker_float.setFormatter(new NumberPicker.Formatter() {
+            @Override
+            public String format(int value) {
+                return String.format("%02d", value);
+            }
+        });
+
+        textPoint = (TextView) view.findViewById(R.id.txt_floating_point);
+        textPercentage = (TextView) view.findViewById(R.id.txt_percentage);
+
+        picker_float.setMaxValue(99);
+        picker_float.setMinValue(0);
+        picker_float.setWrapSelectorWheel(true);
+
+        textPoint.setTextColor(Color.BLUE);
+        textPercentage.setTextColor(Color.BLUE);
+        setNumberPickerTextColor(picker_decimal, Color.BLUE);
+        setNumberPickerTextColor(picker_float, Color.BLUE);
+
+        mToggle_btn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                int color;
+                int min, max, defaultValue;
+                if (isChecked) {
+                    color = Color.RED;
+                    min = 0;
+                    defaultValue = 90;
+                    max = 200;
+
+                } else {
+                    min = 95;
+                    defaultValue = 100;
+                    max = 300;
+                    color = Color.BLUE;
+                }
+
+                picker_decimal.setMaxValue(max);
+                picker_decimal.setMinValue(min);
+                picker_decimal.setValue(defaultValue);
+
+                textPoint.setTextColor(color);
+                textPercentage.setTextColor(color);
+                setNumberPickerTextColor(picker_decimal, color);
+                setNumberPickerTextColor(picker_float, color);
+            }
+        });
+
+        mSpinner.setAdapter(adapter);
+
+
+        builder.setView(view)
+                // Add action buttons
+                .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        int position = mSpinner.getSelectedItemPosition();
+                        CharSequence sequence = (CharSequence) mSpinner.getSelectedItem();
+                        double percentage;
+
+                        percentage = getDoubleFromPicker(picker_decimal, picker_float);
+
                         filterList(mViewList, position, mToggle_btn.isChecked(), percentage);
 
                         dialog.dismiss();
@@ -659,7 +809,8 @@ public class MainActivity extends Activity implements MenuAdapter.OnItemClickLis
 
                 } else if(action.equals(QuickstartPreferences.REGISTRATION_COMPLETE)){
                     // 액션이 COMPLETE일 경우
-                    String token = intent.getStringExtra("token");
+                    String tkn = intent.getStringExtra("token");
+                    token = tkn;
                    Log.e("token", "token_id: " + token);
                 }
 
@@ -686,5 +837,4 @@ public class MainActivity extends Activity implements MenuAdapter.OnItemClickLis
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
         super.onPause();
     }
-
 }
