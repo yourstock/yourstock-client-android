@@ -15,11 +15,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -296,7 +293,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 
         iter = mTemp.iterator();
 
-        while(iter.hasNext()) {
+        while (iter.hasNext()) {
             try {
                 record = iter.next();
                 cursor = obj.getJSONObject(record.getId());
@@ -424,6 +421,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
     }
 
     private String token;
+
     public void getInstanceIdToken() {
         if (checkPlayServices()) {
             Log.e("getInstanceIdToken", "startService");
@@ -504,7 +502,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-        Log.e("pos", "position: "+ position);
+        Log.e("pos", "position: " + position);
         if (position == 1) {
             refresh(mDataList, mViewList);
             mDrawerLayout.closeDrawer(this.mDrawerList);
@@ -516,9 +514,48 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
             TextView txtView = (TextView) view;
             txtView.setText(mKinds[mode]);
             filterByMode(mDataList, mViewList, mode);
-        } else {
-            // getInstanceIdToken();
+        } else if (position == 4) {
+            AlertDialog pushDialog = createDialog();
+
+            pushDialog.show();
+
+            modifyDialog(pushDialog);
+
         }
+    }
+
+    private void modifyDialog(AlertDialog dialog) {
+
+        TextView textView;
+
+        textView = (TextView) dialog.findViewById(R.id.dialog_title);
+        textView.setText(this.getString(R.string.push_setting));
+
+
+        dialog.setButton(AlertDialog.BUTTON_POSITIVE, this.getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+
+                int position = mSpinner.getSelectedItemPosition();
+                double percentage;
+                boolean isMax;
+                percentage = getDoubleFromPicker(picker_decimal, picker_float);
+
+                isMax = mToggle_btn.isChecked();
+                JSONArray array = new JSONArray();
+                array.put(token);
+                array.put((isMax == true ? 1 :0));
+                try {
+                    array.put(percentage);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                array.put(position);
+                Log.e("str", "" + array.toString());
+                socket.emit("register", array);
+                dialog.dismiss();
+            }
+        });
     }
 
     @Override
@@ -533,7 +570,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
     }
 
     public static boolean setNumberPickerTextColor(NumberPicker numberPicker, int color) {
-        final int count = numberPicker.getChildCount();
+        int count = numberPicker.getChildCount();
         for (int i = 0; i < count; i++) {
             View child = numberPicker.getChildAt(i);
             if (child instanceof EditText) {
@@ -584,7 +621,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
     private TextView textPoint;
     private TextView textPercentage;
 
-    public Dialog createDialog() {
+    public AlertDialog createDialog() {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         // Get the layout inflater
@@ -657,133 +694,31 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         });
 
         mSpinner.setAdapter(adapter);
+        AlertDialog dialog;
 
+        dialog = new AlertDialog.Builder(this).create();
 
-        builder.setView(view)
-                // Add action buttons
-                .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                        int position = mSpinner.getSelectedItemPosition();
-                        CharSequence sequence = (CharSequence) mSpinner.getSelectedItem();
-                        double percentage;
-
-                        percentage = getDoubleFromPicker(picker_decimal, picker_float);
-
-                        filterList(mViewList, position, mToggle_btn.isChecked(), percentage);
-
-                        dialog.dismiss();
-                    }
-                })
-                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.dismiss();
-                    }
-                });
-        Dialog dialog = builder.create();
-        dialog.getWindow().setGravity(Gravity.TOP);
-
-        return dialog;
-    }
-
-
-    public Dialog createDialog2() {
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        // Get the layout inflater
-        LayoutInflater inflater = getLayoutInflater();
-
-        // Inflate and set the layout for the dialog
-        // Pass null as the parent view because its going in the dialog layout
-        View view = inflater.inflate(R.layout.dialog_search, null);
-        mSpinner = (Spinner) view.findViewById(R.id.duration);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.duration,
-                android.R.layout.simple_dropdown_item_1line);
-
-        picker_decimal = (NumberPicker) view.findViewById(R.id.picker_decimal);
-        mToggle_btn = (ToggleButton) view.findViewById(R.id.toggle_min_max);
-
-
-        picker_decimal.setMaxValue(300);
-        picker_decimal.setMinValue(95);
-        picker_decimal.setValue(100);
-        picker_decimal.setWrapSelectorWheel(true);
-
-        picker_float = (NumberPicker) view.findViewById(R.id.picker_float);
-
-        picker_float.setFormatter(new NumberPicker.Formatter() {
+        dialog.setView(view);
+        // Add action buttons
+        dialog.setButton(AlertDialog.BUTTON_POSITIVE, this.getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
             @Override
-            public String format(int value) {
-                return String.format("%02d", value);
+            public void onClick(DialogInterface dialog, int id) {
+                int position = mSpinner.getSelectedItemPosition();
+                double percentage;
+
+                percentage = getDoubleFromPicker(picker_decimal, picker_float);
+
+                filterList(mViewList, position, mToggle_btn.isChecked(), percentage);
+
+                dialog.dismiss();
+            }
+        });
+        dialog.setButton(AlertDialog.BUTTON_NEGATIVE, this.getString(R.string.dialog_cancel), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.dismiss();
             }
         });
 
-        textPoint = (TextView) view.findViewById(R.id.txt_floating_point);
-        textPercentage = (TextView) view.findViewById(R.id.txt_percentage);
-
-        picker_float.setMaxValue(99);
-        picker_float.setMinValue(0);
-        picker_float.setWrapSelectorWheel(true);
-
-        textPoint.setTextColor(Color.BLUE);
-        textPercentage.setTextColor(Color.BLUE);
-        setNumberPickerTextColor(picker_decimal, Color.BLUE);
-        setNumberPickerTextColor(picker_float, Color.BLUE);
-
-        mToggle_btn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                int color;
-                int min, max, defaultValue;
-                if (isChecked) {
-                    color = Color.RED;
-                    min = 0;
-                    defaultValue = 90;
-                    max = 200;
-
-                } else {
-                    min = 95;
-                    defaultValue = 100;
-                    max = 300;
-                    color = Color.BLUE;
-                }
-
-                picker_decimal.setMaxValue(max);
-                picker_decimal.setMinValue(min);
-                picker_decimal.setValue(defaultValue);
-
-                textPoint.setTextColor(color);
-                textPercentage.setTextColor(color);
-                setNumberPickerTextColor(picker_decimal, color);
-                setNumberPickerTextColor(picker_float, color);
-            }
-        });
-
-        mSpinner.setAdapter(adapter);
-
-
-        builder.setView(view)
-                // Add action buttons
-                .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                        int position = mSpinner.getSelectedItemPosition();
-                        CharSequence sequence = (CharSequence) mSpinner.getSelectedItem();
-                        double percentage;
-
-                        percentage = getDoubleFromPicker(picker_decimal, picker_float);
-
-                        filterList(mViewList, position, mToggle_btn.isChecked(), percentage);
-
-                        dialog.dismiss();
-                    }
-                })
-                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.dismiss();
-                    }
-                });
-        Dialog dialog = builder.create();
         dialog.getWindow().setGravity(Gravity.TOP);
 
         return dialog;
@@ -798,26 +733,26 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
     }
 
     private BroadcastReceiver mRegistrationBroadcastReceiver;
-    public void registBroadcastReceiver(){
+
+    public void registBroadcastReceiver() {
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 String action = intent.getAction();
 
-
-                if(action.equals(QuickstartPreferences.REGISTRATION_READY)){
+                if (action.equals(QuickstartPreferences.REGISTRATION_READY)) {
                     // 액션이 READY일 경우
                     Log.e("ready", "action ready");
 
-                } else if(action.equals(QuickstartPreferences.REGISTRATION_GENERATING)){
+                } else if (action.equals(QuickstartPreferences.REGISTRATION_GENERATING)) {
                     Log.e("generating", "generating..");
                     // 액션이 GENERATING일 경우
 
-                } else if(action.equals(QuickstartPreferences.REGISTRATION_COMPLETE)){
+                } else if (action.equals(QuickstartPreferences.REGISTRATION_COMPLETE)) {
                     // 액션이 COMPLETE일 경우
                     String tkn = intent.getStringExtra("token");
                     token = tkn;
-                   Log.e("token", "token_id: " + token);
+                    Log.e("token", "token_id: " + token);
                 }
 
             }

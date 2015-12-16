@@ -8,7 +8,8 @@
     <string name="drawer_close">Close navigation drawer</string>
     <string name="dialog_ok">OK</string>
     <string name="dialog_cancel">Cancel</string>
-    <string name="duration">Duration</string>
+    <string name="duration">Duration Search</string>
+    <string name="push_setting">Push Setting</string>
     <string name="toggle_min">Min: &#160;▼</string>
     <string name="toggle_max">Max: &#160;▲</string>
 

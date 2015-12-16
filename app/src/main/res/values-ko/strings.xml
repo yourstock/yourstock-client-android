@@ -8,15 +8,16 @@
     <string name="drawer_close">닫기</string>
     <string name="dialog_ok">확인</string>
     <string name="dialog_cancel">취소</string>
-    <string name="duration">기간 비교</string>
+    <string name="duration">기간 검색</string>
+    <string name="push_setting">푸시 설정</string>
     <string name="toggle_min">최저: &#160;▼</string>
     <string name="toggle_max">최고: &#160;▲</string>
 
     <string-array name="menu_array">
-        <item>전종목</item>
+        <item>전 종목</item>
         <item>검색</item>
         <item>코스닥</item>
-        <item>푸시알림</item>
+        <item>푸시 알림</item>
     </string-array>
     <string-array name="kinds">
         <item>코스닥</item>

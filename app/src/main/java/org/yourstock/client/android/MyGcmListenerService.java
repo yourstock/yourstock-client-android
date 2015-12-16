@@ -19,11 +19,6 @@ public class MyGcmListenerService extends GcmListenerService {
 
     private static final String TAG = "MyGcmListenerService";
 
-    /**
-     *
-     * @param from SenderID 값을 받아온다.
-     * @param data Set형태로 GCM으로 받은 데이터 payload이다.
-     */
     @Override
     public void onMessageReceived(String from, Bundle data) {
         String title = data.getString("title");
@@ -33,16 +28,11 @@ public class MyGcmListenerService extends GcmListenerService {
         Log.d(TAG, "Title: " + title);
         Log.d(TAG, "Message: " + message);
 
-        // GCM으로 받은 메세지를 디바이스에 알려주는 sendNotification()을 호출한다.
         sendNotification(title, message);
     }
 
 
-    /**
-     * 실제 디바에스에 GCM으로부터 받은 메세지를 알려주는 함수이다. 디바이스 Notification Center에 나타난다.
-     * @param title
-     * @param message
-     */
+
     private void sendNotification(String title, String message) {
         Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
