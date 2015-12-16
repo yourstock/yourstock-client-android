@@ -32,6 +32,7 @@
                 <ListView
                     android:id="@+id/record_name_list"
                     android:layout_width="120dp"
+
                     android:layout_height="match_parent" />
             </LinearLayout>
 
@@ -64,7 +65,6 @@
 
                     <ListView
                         android:id="@+id/record_list"
-
                         android:layout_width="match_parent"
                         android:layout_height="match_parent" />
 
@@ -74,15 +74,17 @@
         </LinearLayout>
     </FrameLayout>
 
+    <ListView
+        android:id="@+id/left_drawer"
+        android:scrollbars="vertical"
+        android:layout_width="240dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="left|start"
+        android:choiceMode="singleChoice"
+        android:layout_margin="10dp"
+        android:background="#FFFFFFFF">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/left_drawer"
-            android:scrollbars="vertical"
-            android:layout_width="240dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="left|start"
-            android:choiceMode="singleChoice"
-            android:divider="@null"
-            />
+    </ListView>
+
 
 </android.support.v4.widget.DrawerLayout>

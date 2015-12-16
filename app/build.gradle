@@ -3,10 +3,9 @@ apply plugin: 'com.google.gms.google-services'
 android {
     compileSdkVersion 21
     buildToolsVersion '23.0.2'
-
     defaultConfig {
         applicationId "org.yourstock.yourstock"
-        minSdkVersion 16
+        minSdkVersion 21
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
@@ -17,6 +16,8 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    productFlavors {
+    }
 }
 
 dependencies {
@@ -26,5 +27,5 @@ dependencies {
     compile 'com.android.support:support-v13:21.0.2'
     compile 'com.android.support:appcompat-v7:21.0.2'
     compile 'io.socket:socket.io-client:0.6.2'
-    compile "com.google.android.gms:play-services-gcm:7.5.0"
+    compile 'com.google.android.gms:play-services-gcm:7.5.0'
 }

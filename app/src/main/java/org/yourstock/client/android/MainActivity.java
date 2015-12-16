@@ -67,7 +67,7 @@ import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
 
-public class MainActivity extends Activity implements MenuAdapter.OnItemClickListener {
+public class MainActivity extends Activity implements AdapterView.OnItemClickListener {
 
     private RecordAdapter mRecordNameAdapter, mRecordContentsAdapter;
 
@@ -80,7 +80,7 @@ public class MainActivity extends Activity implements MenuAdapter.OnItemClickLis
     private ActionBarDrawerToggle mDrawerToggle;
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
-    private RecyclerView mDrawerList;
+    private ListView mDrawerList;
     private String[] mMenus;
     private Handler mHandler;
     /* Called whenever we call invalidateOptionsMenu() */
@@ -101,16 +101,20 @@ public class MainActivity extends Activity implements MenuAdapter.OnItemClickLis
         // mKinds = new String[] {"1", "2", "3"};
         mKinds = getResources().getStringArray(R.array.kinds);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerList = (RecyclerView) findViewById(R.id.left_drawer);
+        mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
-        LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(this);
-        mDrawerList.setLayoutManager(mLinearLayoutManager);
+        //LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(this);
+        //mDrawerList.setLayoutManager(mLinearLayoutManager);
 
-        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
+        //mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
 
-        mDrawerList.setHasFixedSize(true);
+        //mDrawerList.setHasFixedSize(true);
 
-        mDrawerList.setAdapter(new MenuAdapter(mMenus, this));
+        MenuAdapter menuAdapter = new MenuAdapter(this, android.R.layout.simple_list_item_1, mMenus);
+        View list_header = getLayoutInflater().inflate(R.layout.header_layout, null);
+        mDrawerList.addHeaderView(list_header);
+        mDrawerList.setAdapter(menuAdapter);
+        mDrawerList.setOnItemClickListener(this);
 
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
@@ -496,22 +500,24 @@ public class MainActivity extends Activity implements MenuAdapter.OnItemClickLis
 
     private int mode = 0;
 
+
     @Override
-    public void onClick(View view, int position) {
-        if (position == 0) {
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+        Log.e("pos", "position: "+ position);
+        if (position == 1) {
             refresh(mDataList, mViewList);
             mDrawerLayout.closeDrawer(this.mDrawerList);
-        } else if (position == 1) {
+        } else if (position == 2) {
             Dialog dialog = createDialog();
             dialog.show();
-        } else if (position == 2) {
+        } else if (position == 3) {
             mode = (mode + 1) % 3;
             TextView txtView = (TextView) view;
             txtView.setText(mKinds[mode]);
             filterByMode(mDataList, mViewList, mode);
         } else {
-           // getInstanceIdToken();
-
+            // getInstanceIdToken();
         }
     }
 
@@ -837,4 +843,5 @@ public class MainActivity extends Activity implements MenuAdapter.OnItemClickLis
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
         super.onPause();
     }
+
 }

@@ -3,9 +3,15 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="android:Theme.Material.Light">
         <!-- Customize your theme here. -->
+
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+    </style>
+    <style name="Button" parent="android:Widget.Material.Button">
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:layout_margin">0dip</item>
+        <item name="android:background">#ffffbb2c</item>
     </style>
 
 </resources>
