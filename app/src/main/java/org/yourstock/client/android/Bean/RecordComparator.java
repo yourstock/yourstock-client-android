@@ -1,4 +1,4 @@
-package org.yourstock.client.android.org.yourstock.client.android.Bean;
+package org.yourstock.client.android.Bean;
 
 import org.yourstock.client.android.R;
 
@@ -13,13 +13,14 @@ public class RecordComparator {
     private static RecordComparator instance = null;
 
     private HashMap<Integer, RecordFieldComparator> mFieldMap;
+    private HistoryComparator mHistoryComparator;
 
 
     public static RecordComparator getInstance() {
         if (RecordComparator.instance == null) {
-            RecordComparator.instance = new RecordComparator();
+           instance = new RecordComparator();
         }
-        return RecordComparator.instance;
+        return instance;
     }
 
     private RecordComparator() {
@@ -27,15 +28,19 @@ public class RecordComparator {
 
         mFieldMap.put(R.id.h_name, new NameComparator());
         mFieldMap.put(R.id.h_price, new PriceComparator());
-        mFieldMap.put(R.id.h_min_price, new MinPriceComparator());
-        mFieldMap.put(R.id.h_max_price, new MaxPriceComparator());
+        mHistoryComparator = new HistoryComparator(0);
     }
 
-    public RecordFieldComparator getComparator(int fieldId) {
+    public RecordFieldComparator getComparator(int fieldId, int index) {
         RecordFieldComparator comparator;
 
-        comparator = mFieldMap.get(fieldId);
-
+        if (index == -1) {
+            comparator = mFieldMap.get(fieldId);
+        }
+        else {
+            mHistoryComparator.setIndex(index);
+            comparator = mHistoryComparator;
+        }
         return comparator;
     }
 
@@ -69,19 +74,25 @@ public class RecordComparator {
         }
     }
 
-    private class MinPriceComparator extends RecordFieldComparator {
+    private class HistoryComparator extends RecordFieldComparator {
 
-        @Override
-        public int compareField(Record lhs, Record rhs) {
-            return lhs.getMinPrice() - rhs.getMinPrice();
+        private int index;
+        public HistoryComparator(int index) {
+            this.index = index;
         }
-    }
-
-    private class MaxPriceComparator extends RecordFieldComparator {
-
         @Override
-        public int compareField(Record lhs, Record rhs) {
-            return lhs.getMaxPrice() - rhs.getMaxPrice();
+        protected int compareField(Record lhs, Record rhs) {
+            double ratio1;
+            double ratio2;
+
+            ratio1 = lhs.getHistoryRatio()[index];
+            ratio2 = rhs.getHistoryRatio()[index];
+
+            return Double.compare(ratio1, ratio2);
+        }
+
+        public void setIndex(int index) {
+            this.index = index;
         }
     }
 }

@@ -5,7 +5,8 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:openDrawer="start">
+    tools:openDrawer="start"
+    >
 
     <FrameLayout
         android:id="@+id/content_frame"
@@ -31,27 +32,26 @@
                 <ListView
                     android:id="@+id/record_name_list"
                     android:layout_width="120dp"
+
                     android:layout_height="match_parent" />
             </LinearLayout>
 
             <HorizontalScrollView
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_margin="0dp"
-                android:layout_weight="1"
+                android:alwaysDrawnWithCache="true"
                 android:padding="0dp">
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_margin="0dp"
-                    android:layout_weight="1"
                     android:orientation="vertical"
                     android:padding="0dp">
 
 
                     <LinearLayout
-                        android:layout_width="match_parent"
+                        android:id="@+id/header"
+                        android:layout_width="wrap_content"
                         android:layout_height="50dp">
 
                         <Button
@@ -61,24 +61,10 @@
                             android:text="@string/h_price"
                             android:textSize="6pt" />
 
-                        <Button
-                            android:id="@+id/h_min_price"
-                            android:layout_width="100dp"
-                            android:layout_height="match_parent"
-                            android:text="@string/h_min_price"
-                            android:textSize="6pt" />
-
-                        <Button
-                            android:id="@+id/h_max_price"
-                            android:layout_width="100dp"
-                            android:layout_height="match_parent"
-                            android:text="@string/h_max_price"
-                            android:textSize="6pt" />
                     </LinearLayout>
 
                     <ListView
                         android:id="@+id/record_list"
-
                         android:layout_width="match_parent"
                         android:layout_height="match_parent" />
 
@@ -88,14 +74,17 @@
         </LinearLayout>
     </FrameLayout>
 
-    <android.support.v7.widget.RecyclerView
+    <ListView
         android:id="@+id/left_drawer"
         android:scrollbars="vertical"
         android:layout_width="240dp"
         android:layout_height="match_parent"
         android:layout_gravity="left|start"
         android:choiceMode="singleChoice"
-        android:divider="@null"
-        />
+        android:layout_margin="10dp"
+        android:background="#FFFFFFFF">
+
+    </ListView>
+
 
 </android.support.v4.widget.DrawerLayout>

@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="80dp"
-    android:tag="record">
+    android:id="@+id/record">
 
     <TextView
         android:id="@+id/price"
@@ -13,24 +13,6 @@
         android:textColor="#000000"
         android:textSize="9pt" />>
 
-
-    <TextView
-        android:id="@+id/min_price"
-        android:layout_width="100dp"
-        android:layout_height="match_parent"
-        android:gravity="right|center_vertical"
-        android:textColor="#000000"
-        android:textSize="9pt" />
-
-
-    <TextView
-        android:id="@+id/max_price"
-        android:layout_width="100dp"
-        android:layout_height="match_parent"
-        android:gravity="right|center_vertical"
-        android:textColor="#000000"
-
-        android:textSize="9pt" />
 </LinearLayout>
 
     <!--

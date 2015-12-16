@@ -1,44 +1,39 @@
-package org.yourstock.client.android.org.yourstock.client.android.Adapter;
+package org.yourstock.client.android.Adapter;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import org.yourstock.client.android.R;
 
+import java.util.Arrays;
+
 /**
  * Created by Taeksang on 2015-12-02.
  */
-public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
+public class MenuAdapter extends ArrayAdapter<String> {
     private String[] mDataset;
-    private OnItemClickListener mListener;
 
-    /**
-     * Interface for receiving click events from cells.
-     */
-    public interface OnItemClickListener {
-        public void onClick(View view, int position);
+    public MenuAdapter(Context context, int resource) {
+        super(context, resource);
     }
 
-    /**
-     * Custom viewholder for our planet views.
-     */
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        public final TextView mTextView;
-
-        public ViewHolder(TextView v) {
-            super(v);
-            mTextView = v;
-        }
+    public MenuAdapter(Context context, int resource, String[] objects) {
+       super(context, resource, objects);
     }
 
+
+
+/*
     public MenuAdapter(String[] myDataset, OnItemClickListener listener) {
         mDataset = myDataset;
         mListener = listener;
-    }
-
+    }*/
+/*
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater vi = LayoutInflater.from(parent.getContext());
@@ -61,5 +56,5 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.ViewHolder> {
     @Override
     public int getItemCount() {
         return mDataset.length;
-    }
+    }*/
 }
