@@ -554,6 +554,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
                 Log.e("str", "" + array.toString());
                 socket.emit("register", array);
                 dialog.dismiss();
+                Toast.makeText(getApplicationContext(), getString(R.string.push_complete), Toast.LENGTH_SHORT).show();
             }
         });
     }
